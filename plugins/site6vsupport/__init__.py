@@ -1,7 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
+from typing import List, Dict, Any, Optional
 
-class Site6VSupport:
+from app.plugins import _PluginBase
+
+class Site6VSupport(_PluginBase):
     # 插件名称
     plugin_name = "6v站点支持"
     # 插件描述
@@ -9,7 +12,7 @@ class Site6VSupport:
     # 插件图标
     plugin_icon = "https://raw.githubusercontent.com/xiaoziguys/MoviePilot-Plugins/main/icons/6v.png"
     # 插件版本
-    plugin_version = "0.0.1"
+    plugin_version = "0.0.2"
     # 插件作者
     plugin_author = "xiaoziguys"
     # 作者主页
@@ -21,7 +24,7 @@ class Site6VSupport:
     # 可使用的用户级别
     auth_level = 1
 
-    def __init__(self):
+    def init_plugin(self, config: dict = None):
         self.base_url = "https://www.66s6.net/"
         self.headers = {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -29,14 +32,14 @@ class Site6VSupport:
         }
         self.timeout = 10
 
-    def decode_filename(self, encoded_str):
+    def decode_filename(self, encoded_str: str) -> str:
         try:
             decoded_str = encoded_str.encode('latin1').decode('utf-8')
             return decoded_str
         except Exception as e:
             return f"解码失败: {str(e)}"
     
-    def get_download_links(self, link):
+    def get_download_links(self, link: str) -> Optional[List[Dict[str, Any]]]:
         try:
             response = requests.get(
                 f"{self.base_url}{link}",
@@ -63,7 +66,7 @@ class Site6VSupport:
             print(f"解析HTML出错: {e}")
             return None
 
-    def search(self, query):
+    def search(self, query: str) -> Optional[List[Dict[str, Any]]]:
         """
         搜索功能
         :param query: 搜索关键词
@@ -108,7 +111,7 @@ class Site6VSupport:
             print(f"解析HTML出错: {e}")
             return None
         
-    def get_api(self):
+    def get_api(self) -> List[Dict[str, Any]]:
         return [{
             "path": "/searchFrom6V",
             "endpoint": self.search,
