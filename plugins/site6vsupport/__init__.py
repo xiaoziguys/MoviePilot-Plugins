@@ -1,8 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
+from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
 
 from app.plugins import _PluginBase
+
+# --- Add Pydantic model for config ---
+class Site6VSupportConfig(BaseModel):
+    enable: bool = False
+    notify: bool = False
+    cron: str = '30 3 * * *'
+    onlyonce: bool = False
 
 class Site6VSupport(_PluginBase):
     # 插件名称
@@ -12,7 +20,7 @@ class Site6VSupport(_PluginBase):
     # 插件图标
     plugin_icon = "https://raw.githubusercontent.com/xiaoziguys/MoviePilot-Plugins/main/icons/6v.png"
     # 插件版本
-    plugin_version = "0.0.2"
+    plugin_version = "0.0.3"
     # 插件作者
     plugin_author = "xiaoziguys"
     # 作者主页
@@ -32,14 +40,14 @@ class Site6VSupport(_PluginBase):
         }
         self.timeout = 10
 
-    def decode_filename(self, encoded_str: str) -> str:
+    def _decode_filename(self, encoded_str: str) -> str:
         try:
             decoded_str = encoded_str.encode('latin1').decode('utf-8')
             return decoded_str
         except Exception as e:
             return f"解码失败: {str(e)}"
     
-    def get_download_links(self, link: str) -> Optional[List[Dict[str, Any]]]:
+    def _get_download_links(self, link: str) -> Optional[List[Dict[str, Any]]]:
         try:
             response = requests.get(
                 f"{self.base_url}{link}",
@@ -55,7 +63,7 @@ class Site6VSupport(_PluginBase):
                 link = item.find('a')
                 if link:
                     results.append({
-                        'des': self.decode_filename(link.text.strip()),
+                        'des': self._decode_filename(link.text.strip()),
                         'url': link['href']
                     })
             return results if results else None
@@ -66,7 +74,7 @@ class Site6VSupport(_PluginBase):
             print(f"解析HTML出错: {e}")
             return None
 
-    def search(self, query: str) -> Optional[List[Dict[str, Any]]]:
+    def _search(self, query: str) -> Optional[List[Dict[str, Any]]]:
         """
         搜索功能
         :param query: 搜索关键词
@@ -97,7 +105,7 @@ class Site6VSupport(_PluginBase):
             for item in soup.find_all('div', class_='article'):
                 detail_link = item.find('a')
                 if detail_link:
-                    for link in self.get_download_links(detail_link['href']):
+                    for link in self._get_download_links(detail_link['href']):
                         results.append({
                         'title': detail_link.text.strip(),
                         'url': link['url'],
@@ -113,9 +121,10 @@ class Site6VSupport(_PluginBase):
         
     def get_api(self) -> List[Dict[str, Any]]:
         return [{
-            "path": "/searchFrom6V",
-            "endpoint": self.search,
+            "path": "/search_from_6v",
+            "endpoint": self._search,
             "methods": ["GET"],
+            "auth": "bear",
             "summary": "从6v搜索资源",
             "description": "从6v搜索资源",
         }]
