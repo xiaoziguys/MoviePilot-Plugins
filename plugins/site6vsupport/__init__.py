@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-class Site6V:
+class Site6VSupport:
     # 插件名称
     plugin_name = "6v站点支持"
     # 插件描述
