@@ -3,13 +3,13 @@ from bs4 import BeautifulSoup
 
 class Site6V:
     # 插件名称
-    plugin_name = "6v站点"
+    plugin_name = "6v站点下载"
     # 插件描述
     plugin_desc = "6v站点搜索与下载"
     # 插件图标
     plugin_icon = "https://raw.githubusercontent.com/xiaoziguys/MoviePilot-Plugins/main/icons/6v.png"
     # 插件版本
-    plugin_version = "0.1"
+    plugin_version = "0.2"
     # 插件作者
     plugin_author = "xiaoziguys"
     # 作者主页
