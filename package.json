@@ -3,7 +3,7 @@
         "name": "6v资源下载",
         "description": "接入6v资源的下载",
         "labels": "站点",
-        "version": "0.1",
+        "version": "0.2",
         "icon": "https://raw.githubusercontent.com/xiaoziguys/MoviePilot-Plugins/main/icons/6v.png",
         "author": "xiaoziguys",
         "level": 1,
