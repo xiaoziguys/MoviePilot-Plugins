@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 class Site6V:
     # 插件名称
-    plugin_name = "6v站点下载"
+    plugin_name = "6v站点支持"
     # 插件描述
     plugin_desc = "6v站点搜索与下载"
     # 插件图标
