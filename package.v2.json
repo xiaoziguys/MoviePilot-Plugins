@@ -1,10 +1,10 @@
 {
-    "6VSite": {
+    "Site6V": {
         "name": "6v资源",
         "description": "接入6v资源的下载",
         "labels": "站点",
         "version": "0.1",
-        "icon": "statistic.png",
+        "icon": "https://raw.githubusercontent.com/xiaoziguys/MoviePilot-Plugins/main/icons/6v.png",
         "author": "xiaoziguys",
         "level": 2,
         "history": {
