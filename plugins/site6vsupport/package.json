@@ -1,7 +1,7 @@
 {
-  "name": "6vsite",
+  "name": "sitev6support",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.4",
   "type": "module",
   "scripts": {
     "dev": "vite --config vite.config.dev.js",

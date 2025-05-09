@@ -304,12 +304,17 @@ onMounted(async () => {
 .app-container { }
 .component-preview {
   overflow: hidden;
-  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 16px; 
-  background-color: #333; 
+  padding: 16px;
+  display: flex;
+  justify-content: center;
 }
 .v-tab {
   text-transform: none !important; 
+}
+</style>
+<style>
+.bg-primary-lighten-5 {
+  background-color: rgba(var(--v-theme-primary), 0.07);
 }
 </style>

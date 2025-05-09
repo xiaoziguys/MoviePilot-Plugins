@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     vue(),
     federation({
-      name: '6VSite',
+      name: 'sitev6support',
       filename: 'remoteEntry.js',
       exposes: {
         './Page': './src/components/Page.vue',

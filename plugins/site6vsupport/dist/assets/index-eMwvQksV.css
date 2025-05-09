@@ -1,12 +1,16 @@
 
-.app-container[data-v-5ed86a72] {
+.app-container[data-v-60dca0e7] {
 }
-.component-preview[data-v-5ed86a72] {
+.component-preview[data-v-60dca0e7] {
   overflow: hidden;
-  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 16px; 
-  background-color: #333;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.bg-primary-lighten-5 {
+  background-color: rgba(var(--v-theme-primary), 0.07);
 }
 @supports not selector(:focus-visible) {
 }

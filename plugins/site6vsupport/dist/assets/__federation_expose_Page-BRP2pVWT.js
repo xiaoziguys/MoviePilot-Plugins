@@ -3730,7 +3730,7 @@ const {
 } = axios;
 
 // 创建 axios 实例
-const apiClient = axios.create({
+axios.create({
   baseURL: 'https://www.66s6.net/e', // 假设 API 基础路径是 /api，您可以根据实际情况调整
   timeout: 10000, // 请求超时时间
   headers: {
@@ -3755,81 +3755,299 @@ const formBody = new URLSearchParams();
         formBody.append(key, payload[key].toString());
     }
 
-// 搜索 API 方法
-function search(query) {
-  formBody.set('keyboard', query);
-  return apiClient.post(
-    '/search/1index.php', {
-    body: formBody.toString()
-  })
-}
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
 
-const {resolveComponent:_resolveComponent,createVNode:_createVNode,withCtx:_withCtx,createTextVNode:_createTextVNode,openBlock:_openBlock,createBlock:_createBlock} = await importShared('vue');
+const {resolveComponent:_resolveComponent,createVNode:_createVNode,createElementVNode:_createElementVNode,withCtx:_withCtx,createTextVNode:_createTextVNode,renderList:_renderList,Fragment:_Fragment,openBlock:_openBlock,createElementBlock:_createElementBlock,toDisplayString:_toDisplayString} = await importShared('vue');
 
+
+const _hoisted_1 = {
+  class: "plugin-page",
+  fluid: ""
+};
+const _hoisted_2 = { class: "action-column" };
 
 const {ref} = await importShared('vue');
 
-// 自定义事件，用于通知主应用刷新数据
+const pluginId = 'Site6VSupport';
+
+// 目录选择对话框相关数据
 
 const _sfc_main = {
   __name: 'Page',
   props: {
   api: {
-    default: () => {}
+    type: [Object, Function],
+    required: true,
+  },
+  initialConfig: {
+    type: Object,
+    default: () => ({}),
   }
 },
   emits: ['action', 'switch', 'close'],
   setup(__props, { emit: __emit }) {
 
+const props = __props;
+
 // 搜索框相关数据和函数
 const searchQuery = ref('');
+const list = ref([]); // 声明list变量
+const loading = ref(false); // 添加loading状态变量
+const snackbar = ref(false); // 控制snackbar显示
+const snackbarText = ref(''); // snackbar文本
+const showDirectoryDialog = ref(false); // 控制目录选择对话框显示
+const transferDirectories = ref([]); // 文件整理目录列表
+const selectedDirectory = ref(null); // 用户选择的下载目录
+const currentMagnetLink = ref(''); // 当前点击的磁力链接
+const directoryLoading = ref(false); // 获取目录列表的loading状态
+const magnetLoading = ref(false); // 磁力下载的loading状态
 
 function performSearch() {
-  console.log('执行搜索:', searchQuery.value);
+  console.log('执行搜索hahah:', searchQuery.value);
   if (!searchQuery.value) {
     return
   }
-  search(searchQuery.value);
+  loading.value = true; // 开始加载
+  props.api.get(`plugin/${pluginId}/search_from_6v`, {
+    params: {
+      query: searchQuery.value
+    }
+  }).then(data => {
+    console.log('搜索结果:', data);
+    list.value = data; // 将搜索结果赋值给list
+    // 处理搜索结果
+  }).catch(error => {
+    console.error('搜索失败:', error);
+  }).finally(() => {
+    loading.value = false; // 结束加载
+  });
+}
+
+function copyUrl(url) {
+  navigator.clipboard.writeText(url).then(() => {
+    console.log('URL copied to clipboard:', url);
+    snackbarText.value = '链接已复制！';
+    snackbar.value = true;
+  }).catch(err => {
+    console.error('Failed to copy URL:', err);
+    snackbarText.value = '复制失败！';
+    snackbar.value = true;
+  });
+}
+
+// 打开目录选择对话框
+function openDirectoryDialog(magnetLink) {
+  currentMagnetLink.value = magnetLink;
+  directoryLoading.value = true;
+  props.api.get(`plugin/${pluginId}/get_transfer_directories`)
+    .then(data => {
+      transferDirectories.value = data;
+      showDirectoryDialog.value = true;
+    })
+    .catch(error => {
+      console.error('获取文件整理目录失败:', error);
+      snackbarText.value = '获取下载目录失败！';
+      snackbar.value = true;
+    })
+    .finally(() => {
+      directoryLoading.value = false;
+    });
+}
+
+// 执行磁力下载并带上选择的目录
+function performMagnetDownloadWithDirectory() {
+  if (!selectedDirectory.value || !currentMagnetLink.value) {
+    snackbarText.value = '请选择下载目录并确保磁力链接有效！';
+    snackbar.value = true;
+    return;
+  }
+
+  magnetLoading.value = true;
+  // 查找当前磁力链接对应的项目
+  const currentItem = list.value.find(item => item.url === currentMagnetLink.value);
+  props.api.post(`plugin/${pluginId}/add_magnet_download`, {
+    magnet_link: currentMagnetLink.value,
+    download_dir: selectedDirectory.value, // 添加下载目录参数
+    title: currentItem ? currentItem.title : '', // 传递标题
+    des: currentItem ? currentItem.des : '' // 传递描述
+  })
+  .then(response => {
+    console.log('磁力下载结果:', response);
+    snackbarText.value = response.message;
+    snackbar.value = true;
+    closeDirectoryDialog(); // 关闭对话框
+  })
+  .catch(error => {
+    console.error('磁力下载失败:', error);
+    snackbarText.value = '磁力下载失败！';
+    snackbar.value = true;
+  })
+  .finally(() => {
+    magnetLoading.value = false;
+  });
+}
+
+// 关闭目录选择对话框
+function closeDirectoryDialog() {
+  showDirectoryDialog.value = false;
+  selectedDirectory.value = null;
+  currentMagnetLink.value = '';
 }
 
 return (_ctx, _cache) => {
+  const _component_v_icon = _resolveComponent("v-icon");
+  const _component_v_card_title = _resolveComponent("v-card-title");
   const _component_v_text_field = _resolveComponent("v-text-field");
   const _component_v_col = _resolveComponent("v-col");
   const _component_v_btn = _resolveComponent("v-btn");
   const _component_v_row = _resolveComponent("v-row");
-  const _component_v_container = _resolveComponent("v-container");
+  const _component_v_tooltip = _resolveComponent("v-tooltip");
+  const _component_v_table = _resolveComponent("v-table");
+  const _component_v_card_text = _resolveComponent("v-card-text");
+  const _component_v_card = _resolveComponent("v-card");
+  const _component_v_snackbar = _resolveComponent("v-snackbar");
+  const _component_v_select = _resolveComponent("v-select");
+  const _component_v_spacer = _resolveComponent("v-spacer");
+  const _component_v_card_actions = _resolveComponent("v-card-actions");
+  const _component_v_dialog = _resolveComponent("v-dialog");
 
-  return (_openBlock(), _createBlock(_component_v_container, {
-    class: "plugin-page",
-    fluid: ""
-  }, {
-    default: _withCtx(() => [
-      _createVNode(_component_v_row, null, {
+  return (_openBlock(), _createElementBlock(_Fragment, null, [
+    _createElementVNode("div", _hoisted_1, [
+      _createVNode(_component_v_card, {
+        flat: "",
+        class: "rounded border"
+      }, {
         default: _withCtx(() => [
-          _createVNode(_component_v_col, { cols: "10" }, {
+          _createVNode(_component_v_card_title, { class: "text-subtitle-1 d-flex align-center px-3 py-2 bg-primary-lighten-5" }, {
             default: _withCtx(() => [
-              _createVNode(_component_v_text_field, {
-                modelValue: searchQuery.value,
-                "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((searchQuery).value = $event)),
-                label: "搜索",
-                "prepend-icon": "mdi-magnify",
-                variant: "outlined",
-                class: "search-field"
-              }, null, 8, ["modelValue"])
+              _createVNode(_component_v_icon, {
+                icon: "mdi-web",
+                class: "mr-2",
+                color: "primary",
+                size: "small"
+              }),
+              _cache[4] || (_cache[4] = _createElementVNode("span", null, "6v站点资源", -1))
             ]),
             _: 1
           }),
-          _createVNode(_component_v_col, { cols: "2" }, {
+          _createVNode(_component_v_card_text, { class: "pt-4" }, {
             default: _withCtx(() => [
-              _createVNode(_component_v_btn, {
-                onClick: performSearch,
-                class: "search-btn",
-                height: "56",
-                width: "100"
+              _createVNode(_component_v_row, { class: "tool-bar" }, {
+                default: _withCtx(() => [
+                  _createVNode(_component_v_col, { cols: "5" }, {
+                    default: _withCtx(() => [
+                      _createVNode(_component_v_text_field, {
+                        modelValue: searchQuery.value,
+                        "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((searchQuery).value = $event)),
+                        label: "搜索",
+                        variant: "outlined",
+                        class: "search-field"
+                      }, null, 8, ["modelValue"])
+                    ]),
+                    _: 1
+                  }),
+                  _createVNode(_component_v_col, { cols: "2" }, {
+                    default: _withCtx(() => [
+                      _createVNode(_component_v_btn, {
+                        onClick: performSearch,
+                        class: "search-btn mt-10px",
+                        loading: loading.value
+                      }, {
+                        default: _withCtx(() => _cache[5] || (_cache[5] = [
+                          _createTextVNode("搜索")
+                        ])),
+                        _: 1
+                      }, 8, ["loading"])
+                    ]),
+                    _: 1
+                  })
+                ]),
+                _: 1
+              }),
+              _createVNode(_component_v_table, {
+                height: "500px",
+                "fixed-header": "",
+                class: "rounded border"
               }, {
-                default: _withCtx(() => _cache[1] || (_cache[1] = [
-                  _createTextVNode("搜索")
-                ])),
+                default: _withCtx(() => [
+                  _cache[8] || (_cache[8] = _createElementVNode("thead", null, [
+                    _createElementVNode("tr", null, [
+                      _createElementVNode("th", { class: "text-left" }, " 标题 "),
+                      _createElementVNode("th", { class: "text-left" }, " 种子 "),
+                      _createElementVNode("th", { class: "text-right action-column" }, " 操作 ")
+                    ])
+                  ], -1)),
+                  _createElementVNode("tbody", null, [
+                    (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(list.value, (item) => {
+                      return (_openBlock(), _createElementBlock("tr", {
+                        key: item.url
+                      }, [
+                        _createElementVNode("td", null, _toDisplayString(item.title), 1),
+                        _createElementVNode("td", null, _toDisplayString(item.des), 1),
+                        _createElementVNode("td", _hoisted_2, [
+                          _createVNode(_component_v_btn, {
+                            density: "comfortable",
+                            icon: "",
+                            variant: "text",
+                            size: "small",
+                            color: "white",
+                            class: "mr-1",
+                            onClick: $event => (openDirectoryDialog(item.url)),
+                            修改下载按钮的点击事件: ""
+                          }, {
+                            default: _withCtx(() => [
+                              _createVNode(_component_v_icon, {
+                                icon: "mdi-download",
+                                size: "small"
+                              }),
+                              _createVNode(_component_v_tooltip, {
+                                activator: "parent",
+                                location: "top"
+                              }, {
+                                default: _withCtx(() => _cache[6] || (_cache[6] = [
+                                  _createTextVNode("下载")
+                                ])),
+                                _: 1
+                              })
+                            ]),
+                            _: 2
+                          }, 1032, ["onClick"]),
+                          _createVNode(_component_v_btn, {
+                            density: "comfortable",
+                            icon: "",
+                            variant: "text",
+                            color: "white",
+                            size: "small",
+                            onClick: $event => (copyUrl(item.url))
+                          }, {
+                            default: _withCtx(() => [
+                              _createVNode(_component_v_icon, {
+                                icon: "mdi-content-copy",
+                                size: "small"
+                              }),
+                              _createVNode(_component_v_tooltip, {
+                                activator: "parent",
+                                location: "top"
+                              }, {
+                                default: _withCtx(() => _cache[7] || (_cache[7] = [
+                                  _createTextVNode("复制链接")
+                                ])),
+                                _: 1
+                              })
+                            ]),
+                            _: 2
+                          }, 1032, ["onClick"])
+                        ])
+                      ]))
+                    }), 128))
+                  ])
+                ]),
                 _: 1
               })
             ]),
@@ -3839,11 +4057,86 @@ return (_ctx, _cache) => {
         _: 1
       })
     ]),
-    _: 1
-  }))
+    _createVNode(_component_v_snackbar, {
+      modelValue: snackbar.value,
+      "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((snackbar).value = $event)),
+      timeout: 2000
+    }, {
+      default: _withCtx(() => [
+        _createTextVNode(_toDisplayString(snackbarText.value), 1)
+      ]),
+      _: 1
+    }, 8, ["modelValue"]),
+    _createVNode(_component_v_dialog, {
+      modelValue: showDirectoryDialog.value,
+      "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => ((showDirectoryDialog).value = $event)),
+      persistent: "",
+      "max-width": "400"
+    }, {
+      default: _withCtx(() => [
+        _createVNode(_component_v_card, null, {
+          default: _withCtx(() => [
+            _createVNode(_component_v_card_title, { class: "text-h5" }, {
+              default: _withCtx(() => _cache[9] || (_cache[9] = [
+                _createTextVNode("选择下载目录")
+              ])),
+              _: 1
+            }),
+            _createVNode(_component_v_card_text, null, {
+              default: _withCtx(() => [
+                _createVNode(_component_v_select, {
+                  modelValue: selectedDirectory.value,
+                  "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((selectedDirectory).value = $event)),
+                  items: transferDirectories.value,
+                  "item-title": "name",
+                  "item-value": "path",
+                  label: "下载目录",
+                  variant: "outlined",
+                  loading: directoryLoading.value,
+                  disabled: directoryLoading.value
+                }, null, 8, ["modelValue", "items", "loading", "disabled"])
+              ]),
+              _: 1
+            }),
+            _createVNode(_component_v_card_actions, null, {
+              default: _withCtx(() => [
+                _createVNode(_component_v_spacer),
+                _createVNode(_component_v_btn, {
+                  color: "blue-darken-1",
+                  variant: "text",
+                  onClick: closeDirectoryDialog
+                }, {
+                  default: _withCtx(() => _cache[10] || (_cache[10] = [
+                    _createTextVNode(" 取消 ")
+                  ])),
+                  _: 1
+                }),
+                _createVNode(_component_v_btn, {
+                  color: "blue-darken-1",
+                  variant: "text",
+                  onClick: performMagnetDownloadWithDirectory,
+                  disabled: !selectedDirectory.value || magnetLoading.value,
+                  loading: magnetLoading.value
+                }, {
+                  default: _withCtx(() => _cache[11] || (_cache[11] = [
+                    _createTextVNode(" 确定 ")
+                  ])),
+                  _: 1
+                }, 8, ["disabled", "loading"])
+              ]),
+              _: 1
+            })
+          ]),
+          _: 1
+        })
+      ]),
+      _: 1
+    }, 8, ["modelValue"])
+  ], 64))
 }
 }
 
 };
+const PageComponent = /*#__PURE__*/_export_sfc(_sfc_main, [['__scopeId',"data-v-c0f25b9c"]]);
 
-export { _sfc_main as default };
+export { _export_sfc as _, PageComponent as default };

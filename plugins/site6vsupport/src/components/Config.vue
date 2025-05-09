@@ -1,15 +1,16 @@
 <script setup>
 import { ref } from 'vue';
 
-// 接收初始配置和API对象
 const props = defineProps({
-  initialConfig: {
-    default: () => ({})
+  api: { 
+    type: [Object, Function],
+    required: true,
   },
-  api: {
-    default: () => {}
+  initialConfig: {
+    type: Object,
+    default: () => ({}),
   }
-})
+});
 
 // 配置数据
 const config = ref({...props.initialConfig})

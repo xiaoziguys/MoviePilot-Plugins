@@ -1,7 +1,7 @@
 import { importShared } from './__federation_fn_import-JrT3xvdd.js';
-import _sfc_main$1 from './__federation_expose_Page-BlOAjC2v.js';
-import _sfc_main$2 from './__federation_expose_Config-D4z1pJGI.js';
-import _sfc_main$3 from './__federation_expose_Dashboard-CjkUtNmk.js';
+import PageComponent, { _ as _export_sfc } from './__federation_expose_Page-BRP2pVWT.js';
+import _sfc_main$1 from './__federation_expose_Config-BRRDQHqA.js';
+import _sfc_main$2 from './__federation_expose_Dashboard-bHx082dI.js';
 import { p as propsFactory, i as includes, a as isOn, e as eventName, g as genericComponent, b as getCurrentInstance, c as provideTheme, d as createLayout, u as useRtl, m as makeThemeProps, f as makeLayoutProps, h as provideDefaults, j as convertToUnit, k as destructComputed, l as isCssColor, n as isParsableColor, o as parseColor, q as getForeground, r as getCurrentInstanceName, s as isObject, S as SUPPORTS_INTERSECTION, t as clamp, v as consoleWarn, w as useProxiedModel, x as useToggleScope, y as useLayoutItem, z as makeLayoutItemProps, A as deepEqual, B as wrapInArray, C as findChildrenWithProvide, D as useTheme, E as useIcon, I as IconValue, F as flattenFragments, G as useResizeObserver, H as IN_BROWSER, J as hasEvent, K as keyCodes, L as useLocale, M as EventProp, N as filterInputAttrs, O as matchesSelector, P as omit, Q as callEvent, R as pick, T as useDisplay, U as useGoTo, V as makeDisplayProps, W as focusableChildren, X as consoleError, Y as defineComponent, Z as deprecate, _ as isPrimitive, $ as getPropertyFromItem, a0 as focusChild, a1 as CircularBuffer, a2 as defer, a3 as templateRef, a4 as isClickInsideElement, a5 as getNextElement, a6 as debounce, a7 as ensureValidVNode, a8 as checkPrintable, a9 as noop, aa as pickWithRest, ab as keys, ac as getEventCoordinates, ad as HexToHSV, ae as HSVtoHex, af as HSLtoHSV, ag as HSVtoHSL, ah as RGBtoHSV, ai as HSVtoRGB, aj as has, ak as getDecimals, al as createRange, am as keyValues, an as SUPPORTS_EYE_DROPPER, ao as HSVtoCSS, ap as RGBtoCSS, aq as getContrast, ar as isComposingIgnoreKey, as as getObjectValueByPath, at as isEmpty, au as defineFunctionalComponent, av as breakpoints, aw as useDate, ax as humanReadableFileSize, ay as provideLocale, az as useLayout, aA as VuetifyLayoutKey, aB as refElement, aC as VClassIcon, aD as VComponentIcon, aE as VLigatureIcon, aF as VSvgIcon } from './date-Spy_2ucp.js';
 
 true              &&(function polyfill() {
@@ -41,14 +41,6 @@ true              &&(function polyfill() {
     fetch(link.href, fetchOpts);
   }
 }());
-
-const _export_sfc = (sfc, props) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props) {
-    target[key] = val;
-  }
-  return target;
-};
 
 const {createTextVNode:_createTextVNode$7,resolveComponent:_resolveComponent,withCtx:_withCtx,createVNode:_createVNode$2k,createElementVNode:_createElementVNode,toDisplayString:_toDisplayString,openBlock:_openBlock,createElementBlock:_createElementBlock} = await importShared('vue');
 
@@ -348,7 +340,7 @@ return (_ctx, _cache) => {
                       default: _withCtx(() => [
                         _cache[11] || (_cache[11] = _createElementVNode("h2", { class: "text-h5 mb-4" }, "运行状态与操作 (Page.vue)", -1)),
                         _createElementVNode("div", _hoisted_2, [
-                          _createVNode$2k(_sfc_main$1, {
+                          _createVNode$2k(PageComponent, {
                             api: mockPluginApiWrapper,
                             onSwitch: switchToConfig,
                             onClose: _cache[1] || (_cache[1] = $event => (handleClose('Page')))
@@ -361,7 +353,7 @@ return (_ctx, _cache) => {
                       default: _withCtx(() => [
                         _cache[12] || (_cache[12] = _createElementVNode("h2", { class: "text-h5 mb-4" }, "插件配置 (Config.vue)", -1)),
                         _createElementVNode("div", _hoisted_3, [
-                          _createVNode$2k(_sfc_main$2, {
+                          _createVNode$2k(_sfc_main$1, {
                             api: mockPluginApiWrapper,
                             "initial-config": mockDatabase.config,
                             onConfigUpdatedOnServer: handleConfigUpdatedOnServer,
@@ -412,7 +404,7 @@ return (_ctx, _cache) => {
                           _: 1
                         }),
                         _createElementVNode("div", _hoisted_4, [
-                          _createVNode$2k(_sfc_main$3, {
+                          _createVNode$2k(_sfc_main$2, {
                             api: mockPluginApiWrapper,
                             config: dashboardWidgetConfig,
                             "allow-refresh": true,
@@ -472,7 +464,7 @@ return (_ctx, _cache) => {
 }
 
 };
-const App = /*#__PURE__*/_export_sfc(_sfc_main, [['__scopeId',"data-v-5ed86a72"]]);
+const App = /*#__PURE__*/_export_sfc(_sfc_main, [['__scopeId',"data-v-60dca0e7"]]);
 
 // Utilities
 // Composables

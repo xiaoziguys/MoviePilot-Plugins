@@ -8,16 +8,17 @@ const _hoisted_1 = { class: "plugin-config" };
 const {ref} = await importShared('vue');
 
 
-// 接收初始配置和API对象
 
 const _sfc_main = {
   __name: 'Config',
   props: {
-  initialConfig: {
-    default: () => ({})
+  api: { 
+    type: [Object, Function],
+    required: true,
   },
-  api: {
-    default: () => {}
+  initialConfig: {
+    type: Object,
+    default: () => ({}),
   }
 },
   emits: ['save', 'close', 'switch'],
