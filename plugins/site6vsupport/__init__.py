@@ -37,7 +37,7 @@ class Site6VSupport(_PluginBase):
     # 插件图标
     plugin_icon = "https://raw.githubusercontent.com/xiaoziguys/MoviePilot-Plugins/main/icons/6v.png"
     # 插件版本
-    plugin_version = "0.0.6"
+    plugin_version = "0.0.7"
     # 插件作者
     plugin_author = "xiaoziguys"
     # 作者主页
@@ -137,11 +137,12 @@ class Site6VSupport(_PluginBase):
                 detail_link = item.find('a')
                 if detail_link:
                     for link in self._get_download_links(detail_link['href']):
-                        results.append({
-                        'title': detail_link.text.strip(),
-                        'url': link['url'],
-                        'des': link['des']
-                    })
+                        if link['url'].startswith('magnet:'):
+                            results.append({
+                            'title': detail_link.text.strip(),
+                            'url': link['url'],
+                            'des': link['des']
+                        })
             return results if results else None
         except requests.exceptions.RequestException as e:
             print(f"搜索请求出错: {e}")
@@ -166,8 +167,20 @@ class Site6VSupport(_PluginBase):
         results = tmdb.search_multiis(title)
         if results:
             for result in results:
-                if result['title'] == title:
-                    return result
+                result_title = result.get('title', '')
+                if not result_title:
+                    result_title = result.get('name', '')
+                if result_title:
+                    # 清理标题以进行比较
+                    cleaned_result_title = result_title.replace(':', '').replace(' ', '').replace('.', '').replace('：', '')
+                    cleaned_title = title.replace(':', '').replace(' ', '').replace('.', '').replace('：', '')
+                    # 转换罗马数字为阿拉伯数字（简化处理，仅处理常见罗马数字）
+                    roman_to_arabic = {'I': '1', 'II': '2', 'III': '3', 'IV': '4', 'V': '5', 'Ⅱ': '2', 'Ⅲ': '3', 'Ⅳ': '4', 'Ⅴ': '5'}
+                    for roman, arabic in roman_to_arabic.items():
+                        cleaned_result_title = cleaned_result_title.replace(roman, arabic)
+                        cleaned_title = cleaned_title.replace(roman, arabic)
+                    if cleaned_result_title == cleaned_title:
+                        return result
         return {}
 
     def _add_magnet_download(self, request: MagnetDownloadRequest) -> Dict[str, Any]:
@@ -240,6 +253,10 @@ class Site6VSupport(_PluginBase):
                     tmdbid = tmdb_info.get('id')
                     year = tmdb_info.get('first_air_date', '').split('-')[0] if media_type == "tv" else tmdb_info.get('release_date', '').split('-')[0]
                     image = f"https://image.tmdb.org/t/p/original{tmdb_info.get('poster_path')}" if tmdb_info.get('poster_path') else None
+                    if tmdb_info.get('name'):
+                        cleaned_title = tmdb_info.get('name', cleaned_title)
+                    else:
+                        cleaned_title = tmdb_info.get('title', cleaned_title)
                 
                 downloadhis_oper.add(
                     path=request.download_dir or "", # 使用下载目录作为路径
